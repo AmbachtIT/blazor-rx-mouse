@@ -19,6 +19,7 @@
 
 	private void OnMouseOver(MouseEventArgs args)
 	{
+		State.Over = true;
 	}
 
 	private void OnMouseMove(MouseEventArgs args)
@@ -32,40 +33,29 @@
 		);
 	}
 
-	private void OnMouseDown(MouseEventArgs args)
+	private void OnMouseDown(MouseEventArgs args) => SetButtonState(args.Button, true);
+
+	private void OnMouseUp(MouseEventArgs args) => SetButtonState(args.Button, false);
+
+	private void SetButtonState(long button, bool value)
 	{
-		var state = GetButtonState(args);
-		if (state == null)
+		switch (button)
 		{
-			return;
+			case 0:
+				State.LeftButtonPressed = value;
+				break;
+			case 1:
+				State.MiddleButtonPressed = value;
+				break;
+			case 2:
+				State.RightButtonPressed = value;
+				break;
 		}
-		state.Pressed = true;
 	}
-
-	private void OnMouseUp(MouseEventArgs args)
-	{
-		var state = GetButtonState(args);
-		if (state == null)
-		{
-			return;
-		}
-		state.Pressed = false;
-	}
-
-
-	private MouseButtonState? GetButtonState(MouseEventArgs args) => args.Button switch
-	{
-		0 => State.Left,
-		1 => State.Right,
-		2 => State.Middle,
-		_ => null
-	};
 
 	private void OnMouseOut(MouseEventArgs args)
 	{
-		
+		State.Over = false;
 	}
-
-
 
 }

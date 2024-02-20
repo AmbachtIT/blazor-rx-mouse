@@ -39,18 +39,21 @@
 		base.OnInitialized();
 
 		_mouseState.OnAnyPropertyChanges().OnChangeUntil(_ => StateHasChanged(), _disposed);
+		_mouseState.OnPropertyChanges(s => s.LeftButtonPressed).OnChangeUntil(v => UpdateStats(_left, v), _disposed);
+		_mouseState.OnPropertyChanges(s => s.MiddleButtonPressed).OnChangeUntil(v => UpdateStats(_middle, v), _disposed);
+		_mouseState.OnPropertyChanges(s => s.RightButtonPressed).OnChangeUntil(v => UpdateStats(_right, v), _disposed);
+	}
 
-		foreach (var (state, stats) in new[]
-		         {
-			         (_mouseState.Left, _left),
-			         (_mouseState.Middle, _middle),
-					 (_mouseState.Right, _right)
-				 })
+	private void UpdateStats(MouseButtonStats stats, bool value)
+	{
+		stats.Pressed = value;
+		if (value)
 		{
-			state.OnAnyPropertyChanges().OnChangeUntil(_ => StateHasChanged(), _disposed);
-			state.OnDown.OnNextUntil(() => stats.DownInvoked++, _disposed);
-			state.OnUp.OnNextUntil(() => stats.UpInvoked++, _disposed);
-			state.OnPropertyChanges(s => s.Pressed).OnChangeUntil(s => stats.Pressed = s, _disposed);
+			stats.DownInvoked++;
+		}
+		else
+		{
+			stats.UpInvoked++;
 		}
 	}
 
