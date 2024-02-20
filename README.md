@@ -9,3 +9,7 @@ to update application state based on mouse events.
 
 The mouse state object can be passed into the component hierarchy as cascading state. In testing scenario's, the `MouseState` 
 can be updated from the test to simulate mouse interactions.
+
+## Changes
+[These changes](https://github.com/AmbachtIT/blazor-rx-mouse/compare/9b0a114...fee4872) were made to the Blazor template to implement the desired functionality.
+
