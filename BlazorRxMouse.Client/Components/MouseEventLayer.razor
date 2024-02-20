@@ -1,0 +1,71 @@
+﻿@using System.Numerics
+<div style="width: 100%; height: 100%;"	
+     @onmouseover="@OnMouseOver"
+     @onmousemove="@OnMouseMove"
+     @onmousedown="@OnMouseDown"
+     @onmouseup="@OnMouseUp"
+	 @onmouseout="@OnMouseOut">
+	@ChildContent
+</div>
+
+@code {
+
+	[Parameter()] 
+	public MouseState State { get; set; } = new();
+
+	[Parameter()]
+	public RenderFragment ChildContent { get; set; }
+
+
+	private void OnMouseOver(MouseEventArgs args)
+	{
+	}
+
+	private void OnMouseMove(MouseEventArgs args)
+	{
+		State.Position = new MousePosition(
+			new Vector2((float)args.ScreenX, (float)args.ScreenY),
+			new Vector2((float)args.PageX, (float)args.PageY),
+			new Vector2((float)args.ClientX, (float)args.ClientY),
+			new Vector2((float)args.OffsetX, (float)args.OffsetY),
+			new Vector2((float)args.MovementX, (float)args.MovementY)
+		);
+	}
+
+	private void OnMouseDown(MouseEventArgs args)
+	{
+		var state = GetButtonState(args);
+		if (state == null)
+		{
+			return;
+		}
+		state.Pressed = true;
+	}
+
+	private void OnMouseUp(MouseEventArgs args)
+	{
+		var state = GetButtonState(args);
+		if (state == null)
+		{
+			return;
+		}
+		state.Pressed = false;
+	}
+
+
+	private MouseButtonState? GetButtonState(MouseEventArgs args) => args.Button switch
+	{
+		0 => State.Left,
+		1 => State.Right,
+		2 => State.Middle,
+		_ => null
+	};
+
+	private void OnMouseOut(MouseEventArgs args)
+	{
+		
+	}
+
+
+
+}

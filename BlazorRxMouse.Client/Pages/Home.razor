@@ -1,7 +1,82 @@
-﻿@page "/"
+﻿@using System.Reactive.Subjects
+@using System.Reactive
+@implements IDisposable
+@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Mouse events in blazor using RX.net</PageTitle>
 
-<h1>Hello, world!</h1>
+<MouseEventLayer State="@_mouseState">
+	<h1>Hello, world!</h1>
 
-Welcome to your new app.
+	Welcome to your new app.
+	<h2>Mouse position</h2>
+	<ul>
+		<li><b>Screen</b>: @_mouseState.Position.Screen</li>
+		<li><b>Page</b>: @_mouseState.Position.Page</li>
+		<li><b>Client</b>: @_mouseState.Position.Client</li>
+		<li><b>Offset</b>: @_mouseState.Position.Offset</li>
+		<li><b>Movement</b>: @_mouseState.Position.Movement</li>
+	</ul>
+	
+	<h2>Mouse buttons</h2>
+	<ul>
+		@foreach (var button in Buttons())
+		{
+			<li><b>@button.Name</b>: @(button.Pressed ? "Pressed" : "Not pressed"). MouseDown invoked @button.DownInvoked times. MouseUp invoked @button.UpInvoked times  </li>
+		}
+		
+	</ul>
+
+</MouseEventLayer>
+
+
+
+@code
+{
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		_mouseState.OnAnyPropertyChanges().OnChangeUntil(_ => StateHasChanged(), _disposed);
+
+		foreach (var (state, stats) in new[]
+		         {
+			         (_mouseState.Left, _left),
+			         (_mouseState.Middle, _middle),
+					 (_mouseState.Right, _right)
+				 })
+		{
+			state.OnAnyPropertyChanges().OnChangeUntil(_ => StateHasChanged(), _disposed);
+			state.OnDown.OnNextUntil(() => stats.DownInvoked++, _disposed);
+			state.OnUp.OnNextUntil(() => stats.UpInvoked++, _disposed);
+			state.OnPropertyChanges(s => s.Pressed).OnChangeUntil(s => stats.Pressed = s, _disposed);
+		}
+	}
+
+	private readonly MouseState _mouseState = new MouseState();
+	private readonly MouseButtonStats _left = new MouseButtonStats("Left");
+	private readonly MouseButtonStats _middle = new MouseButtonStats("Middle");
+	private readonly MouseButtonStats _right = new MouseButtonStats("Right");
+	private readonly ISubject<Unit> _disposed = new Subject<Unit>();
+
+	private IEnumerable<MouseButtonStats> Buttons()
+	{
+		yield return _left;
+		yield return _middle;
+		yield return _right;
+	}
+
+	public void Dispose()
+	{
+		_disposed.OnNext(Unit.Default);
+	}
+
+
+	private record class MouseButtonStats(string Name)
+	{
+		public bool Pressed { get; set; }
+		public int DownInvoked { get; set; }
+		public int UpInvoked { get; set; }
+	}
+}

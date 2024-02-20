@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34601.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorRxMouse", "BlazorRxMouse\BlazorRxMouse.csproj", "{C22FBA22-3DFD-4E35-A48A-2C54C692FDC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorRxMouse", "BlazorRxMouse\BlazorRxMouse.csproj", "{C22FBA22-3DFD-4E35-A48A-2C54C692FDC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorRxMouse.Client", "BlazorRxMouse.Client\BlazorRxMouse.Client.csproj", "{F848D877-403A-4D3D-85C1-B5BB52B8BA9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorRxMouse.Client", "BlazorRxMouse.Client\BlazorRxMouse.Client.csproj", "{F848D877-403A-4D3D-85C1-B5BB52B8BA9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
